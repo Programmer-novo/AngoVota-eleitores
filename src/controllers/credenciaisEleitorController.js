@@ -8,9 +8,9 @@ const {
 } = require('@simplewebauthn/server');
 
 const base64url = require('base64url');
-const rpName = 'AngoVota';
-const rpID = 'localhost';
-const origin = 'http://localhost:56288';
+const rpName = process.env.rpNAME;
+const rpID = process.env.rpID;
+const origin = process.env.ORIGIN;
 
 
 class CredenciaisController {
