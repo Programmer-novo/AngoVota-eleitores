@@ -129,6 +129,8 @@ class ModeloGemini {
         } else {
             console.log("\n BI recusado", resultado.motivo);
         }
+
+      
     }
 }
 
