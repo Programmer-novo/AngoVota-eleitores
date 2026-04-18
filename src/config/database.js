@@ -1,5 +1,5 @@
   require('dotenv').config();
-
+/*
   module.exports = { 
     username: process.env.DB_USERNAME, 
     password: process.env.DB_PASSWORD, 
@@ -8,3 +8,8 @@
     port: process.env.DB_PORT, 
     dialect: process.env.DB_DIALECT 
   };
+  */
+
+  module.exports = {
+    BANCO: process.env.DATABASE_URL
+  }
