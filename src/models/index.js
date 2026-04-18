@@ -10,11 +10,10 @@ const config = require("../config/database");
 const db = {};
 
 //Buscar informações do banco, seguindo a ordem abaixo
-const sequelize = new Sequelize(
- config.database,
- config.username,
- config.password,
-  config);
+const sequelize = new Sequelize(config.BANCO, {
+  dialect: 'postgres',
+  logging: false
+});
 
 
 fs
