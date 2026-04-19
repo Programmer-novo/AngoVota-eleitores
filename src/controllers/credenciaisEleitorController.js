@@ -125,6 +125,104 @@ await credenciais.create({
 });
       
     */ 
+      //#############################################################################################################################################################################
+
+            if(!req.session.KYC && !req.session.eleitor_id && !req.session.perfilNumberEleitor){
+              delete req.session.eleitor_id;
+              delete req.session.perfilNumberEleitor;
+              return res.status(401).json({error: 'KYC não realizado, ou falhado'});
+            }
+
+            const bi = req.session.eleitor_id;
+
+            const perfil = req.session.perfilNumberEleitor;
+            const kyc_concluido = req.session.KYC
+
+            req.session.kyc = kyc_concluido;
+
+            async function localization(ip) {
+
+                    try{
+  
+                          const token = process.env.Token;
+
+                          const resposta = await fetch(`https://ipinfo.io/${ip}?token=${token}`);
+
+                          const dados = await resposta.json();
+
+                          return{
+                            cidade: dados.city,
+                            provincia: dados.region,
+                            pais: dados.country
+                          };
+
+                          }
+
+                          catch(err){
+                            console.error('Erro ao localizar', err);
+                            return null
+                          }
+                          
+            }
+
+            const ip = req.pegarInformacoes?.ip;
+
+                let listaProvincias = [
+
+                    'Luanda',
+                    'Bengo',
+                    'Benguela',
+                    'Bié',
+                    'Cabinda',
+                    'Cuando Cubango',
+                    'Cuanza Norte',
+                    'Cuanza Sul',
+                    'Cunene',
+                    'Huambo',       
+                    'Huíla',
+                    'Icolo e Bengo',      
+                    'Lunda Norte',
+                    'Lunda Sul',
+                    'Malanje',
+                    'Moxico',
+                    'Moxico Leste',
+                    'Namibe',
+                    'Uíge',
+                    'Zaire'
+             ];
+
+
+            const provincia = listaProvincias[Math.floor(Math.random() * listaProvincias.length)]
+
+
+
+            // Quando estiver em produção
+
+            if (ip !== '127.0.0.0' && ip !== '::1') {
+
+
+                const localizacao = await localization(ip);
+
+                if (localizacao?.provincia) {
+
+
+                    const provincia = localizacao?.provincia;
+
+                }
+                
+            }
+        
+
+            console.log(`${provincia}`);
+
+
+            const criarEleitor = await eleitores.create({bilhete_id:bi, provincia});
+
+             req.session.eleitor_id = criarEleitor.id
+
+             req.session.provincia = criarEleitor.provincia;
+
+      //##############################################################################################################################################################################
       req.session.credId = credId;
       delete req.session.currentChallenge;
      // delete req.session.bilhete_id;
