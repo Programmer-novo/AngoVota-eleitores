@@ -78,6 +78,96 @@ class VotosController {
       return res.status(500).json({ message: "Erro ao mostrar votos" });
     }
   }
+
+  async MostrarVotosProvincia(req, res){
+
+    try{
+
+          const {provincia} = req.body;
+
+            let where = {};
+
+            if (provincia) {
+
+            where.provincia = provincia
+          }
+
+
+
+              const resultadosProvincia = await candidatos.findAll({
+              attributes: [
+                'id',
+                'nome',
+                'partido',
+                [sequelize.col('voto.provincia'), 'provincia'],
+                [sequelize.fn('COUNT', sequelize.col('voto.id')), 'total_votos_provincia']
+              ],
+
+
+              include: [
+                {
+                  model: votos,
+                  as:'voto',
+                  attributes: [],
+
+                  
+                       where
+                }
+              ],
+              group: ['candidatos.id', 'candidatos.nome', 'candidatos.partido', 'voto.provincia'],
+              order: [
+                ['id', 'ASC'],
+                [sequelize.literal('total_votos_provincia'), 'DESC']
+              ]
+            });
+
+            // Agora agrupa-se manualmente os resultados
+            const resultadosAgrupados = {};
+
+            for (const linha of resultadosProvincia) {
+              const candidatoId = linha.id;
+              const provincia = linha.get('provincia');
+
+              if (!provincia) continue; 
+
+              if (!resultadosAgrupados[candidatoId]) {
+                resultadosAgrupados[candidatoId] = {
+                  nome: linha.nome,
+                  partido: linha.partido,
+                  total: 0,
+                  provincias: []
+                };
+              }
+
+              //console.log(linha.get('voto.provincia'))
+
+              const votosProvincia = parseInt(linha.get('total_votos_provincia'), 10);
+
+              resultadosAgrupados[candidatoId].total += votosProvincia;
+              resultadosAgrupados[candidatoId].provincias.push({
+                nome: provincia,
+                votos: votosProvincia
+              });
+            }
+
+            const io = req.app.get('io');
+
+            io.emit('resultadosAgrupados', resultadosAgrupados);
+
+            
+            res.json({ resultados: resultadosAgrupados });
+
+
+    }
+
+
+    catch(error){
+
+      console.error("Erro ao mostrar votos por candidatos e provincia:", error);
+
+      return res.status(500).json({ message: "Erro ao mostrar votos por candidatos e provincia" });
+      
+    }
 }
 
 module.exports = new VotosController();
