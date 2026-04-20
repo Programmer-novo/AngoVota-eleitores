@@ -42,6 +42,8 @@ routes.get('/bilhete', middleware, bilheteController.mostarBilhetes);
 
 routes.get('/sessao/validar', sessao.validarRota);
 
+routes.post('/resultadoVotos/Provincias', votar.MostrarVotosProvincia);
+
 
 
 
