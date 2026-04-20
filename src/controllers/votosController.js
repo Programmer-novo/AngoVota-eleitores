@@ -170,4 +170,6 @@ class VotosController {
     }
 }
 
+}
+
 module.exports = new VotosController();
