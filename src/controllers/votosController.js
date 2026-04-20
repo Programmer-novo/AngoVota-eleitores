@@ -150,9 +150,9 @@ class VotosController {
               });
             }
 
-            const io = req.app.get('io');
+          
 
-            io.emit('resultadosAgrupados', resultadosAgrupados);
+
 
             
             res.json({ resultados: resultadosAgrupados });
