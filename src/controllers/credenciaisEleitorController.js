@@ -127,7 +127,7 @@ await credenciais.create({
     */ 
       //#############################################################################################################################################################################
 
-            if(!req.session.kyc && !req.session.eleitor_id && !req.session.perfilNumberEleitor){
+            if(!req.session.KYC && !req.session.eleitor_id && !req.session.perfilNumberEleitor){
               delete req.session.eleitor_id;
               delete req.session.perfilNumberEleitor;
               return res.status(401).json({error: 'KYC não realizado, ou falhado'});
